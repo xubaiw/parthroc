@@ -10,29 +10,14 @@ export type Context<S> = {
   state: S;
 };
 
-export type Result<T> = Success<T> | Failure;
-
-export type Success<T> = {
-  success: true;
-  value: T;
-};
-
-export type Failure = {
-  success: false;
-  reason: Reason;
-};
-
-export const SYMBOL = Symbol();
-
-export type Reason = {
-  symbol: typeof SYMBOL;
-  expected: string;
-};
-
-export const expect = (expected: string): Reason => ({
-  symbol: SYMBOL,
-  expected,
-});
+export class ParthrocError extends Error {
+  cause?: ParthrocError[];
+  constructor(message: string, cause?: ParthrocError[]) {
+    super();
+    this.message = message;
+    this.cause = cause;
+  }
+}
 
 export const attempt = <T, S>(p: Parser<T, S>): Parser<T, S> => (ctx) => {
   const idx = ctx.index;
@@ -56,6 +41,6 @@ export const regex = <S>(re: RegExp): Parser<string, S> => (ctx) => {
     ctx.index += res[0].length;
     return res[0];
   } else {
-    throw expect(re.source);
+    throw new ParthrocError(`Expect ${re.source}`);
   }
 };
