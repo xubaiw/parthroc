@@ -57,16 +57,6 @@ export const safen = <T, S>(p: Parser<T, S>): Parser<Result<T>, S> => (ctx) => {
   }
 };
 
-export const str = <S>(match: string): Parser<string, S> =>
-  attempt((ctx) => {
-    const endIdx = ctx.index + match.length;
-    if (ctx.text.substring(ctx.index, endIdx) === match) {
-      return match;
-    } else {
-      throw expect(match);
-    }
-  });
-
 export const regex = <S>(re: RegExp): Parser<string, S> => (ctx) => {
   const gRe = new RegExp(
     re.source,
