@@ -2,9 +2,9 @@
  * @file Many parsers adapted from Deno `x/combine` and Lean4 core.
  */
 
-export type Parser<T, S = unknown> = (ctx: Context<S>) => T;
+export type Parser<T, S> = (ctx: Context<S>) => T;
 
-export type Context<S = unknown> = {
+export type Context<S> = {
   text: string;
   index: number;
   state: S;
