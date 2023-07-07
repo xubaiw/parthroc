@@ -45,18 +45,6 @@ export const attempt = <T, S>(p: Parser<T, S>): Parser<T, S> => (ctx) => {
   }
 };
 
-export const safen = <T, S>(p: Parser<T, S>): Parser<Result<T>, S> => (ctx) => {
-  try {
-    const value = p(ctx);
-    return { success: true, value };
-  } catch (e) {
-    if (e.symbol == SYMBOL) {
-      return { success: false, reason: e };
-    }
-    throw e;
-  }
-};
-
 export const regex = <S>(re: RegExp): Parser<string, S> => (ctx) => {
   const gRe = new RegExp(
     re.source,
