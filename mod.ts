@@ -1,3 +1,7 @@
+/**
+ * @file Many parsers adapted from Deno `x/combine` and Lean4 core.
+ */
+
 export type Parser<T, S = unknown> = (ctx: Context<S>) => T;
 
 export type Context<S = unknown> = {
@@ -62,3 +66,18 @@ export const str = <S>(match: string): Parser<string, S> =>
       throw expect(match);
     }
   });
+
+export const regex = <S>(re: RegExp): Parser<string, S> => (ctx) => {
+  const gRe = new RegExp(
+    re.source,
+    re.global ? re.flags : `${re.flags}g`,
+  );
+  gRe.lastIndex = ctx.index;
+  const res = gRe.exec(ctx.text);
+  if (res && res.index === ctx.index) {
+    ctx.index += res[0].length;
+    return res[0];
+  } else {
+    throw expect(re.source);
+  }
+};
